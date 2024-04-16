@@ -1,0 +1,86 @@
+﻿@page "/calc"
+
+<h3>Calculator</h3>
+
+<div class="calculator">
+    <div class="display">
+        <input type="text" id="display" value="@displayValue" readonly />
+    </div>
+    <div class="buttons">
+        <button @onclick="() => AppendNumber('1')">1</button>
+        <button @onclick="() => AppendNumber('2')">2</button>
+        <button @onclick="() => AppendNumber('3')">3</button>
+        <button @onclick="() => AppendNumber('4')">4</button>
+        <button @onclick="() => AppendNumber('5')">5</button>
+        <button @onclick="() => AppendNumber('6')">6</button>
+        <button @onclick="() => AppendNumber('7')">7</button>
+        <button @onclick="() => AppendNumber('8')">8</button>
+        <button @onclick="() => AppendNumber('9')">9</button>
+        <button @onclick="() => AppendNumber('0')">0</button>
+        <button @onclick="() => AppendNumber('.')">.</button>
+        <button @onclick="() => AppendOperator('+')">+</button>
+        <button @onclick="() => AppendOperator('-')">-</button>
+        <button @onclick="() => AppendOperator('*')">*</button>
+        <button @onclick="() => AppendOperator('/')">/</button>
+        <button @onclick="() => CalculateResult()">=</button>
+        <button @onclick="() => ClearDisplay()">C</button>
+    </div>
+</div>
+
+@code {
+    private string displayValue = "";
+    private double operand1 = 0;
+    private double operand2 = 0;
+    private string operation = "";
+
+    private void AppendNumber(string number)
+    {
+        displayValue += number;
+    }
+
+    private void AppendOperator(string op)
+    {
+        if (double.TryParse(displayValue, out operand1))
+        {
+            operation = op;
+            displayValue = "";
+        }
+    }
+
+    private void CalculateResult()
+    {
+        if (double.TryParse(displayValue, out operand2))
+        {
+            switch (operation)
+            {
+                case "+":
+                    displayValue = (operand1 + operand2).ToString();
+                    break;
+                case "-":
+                    displayValue = (operand1 - operand2).ToString();
+                    break;
+                case "*":
+                    displayValue = (operand1 * operand2).ToString();
+                    break;
+                case "/":
+                    if (operand2 != 0)
+                    {
+                        displayValue = (operand1 / operand2).ToString();
+                    }
+                    else
+                    {
+                        displayValue = "Error";
+                    }
+                    break;
+            }
+        }
+    }
+
+    private void ClearDisplay()
+    {
+        displayValue = "";
+        operand1 = 0;
+        operand2 = 0;
+        operation = "";
+    }
+}

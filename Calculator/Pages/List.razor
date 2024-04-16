@@ -1,0 +1,214 @@
+﻿@page "/list"
+
+<h3>На этой неделе нужно сделать</h3>
+
+<button class="btn btn-primary" @onclick="ShowAddTaskModal">Добавить</button>
+
+<!-- Modal для добавления нового дела -->
+<div class="modal" style="@(showAddTaskModal ? "display: block;" : "display: none;")">
+    <div class="modal-content">
+        <span class="close" @onclick="HideAddTaskModal">&times;</span>
+        <h2>Добавить новое дело</h2>
+        <div class="form-group">
+            <label for="dayOfWeek">День недели:</label>
+            <select id="dayOfWeek" class="form-control" @bind="selectedDayOfWeek">
+                <option value="Понедельник">Понедельник</option>
+                <option value="Вторник">Вторник</option>
+                <option value="Среда">Среда</option>
+                <option value="Четверг">Четверг</option>
+                <option value="Пятница">Пятница</option>
+                <option value="Суббота">Суббота</option>
+                <option value="Воскресенье">Воскресенье</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="taskDescription">Описание дела:</label>
+            <input type="text" id="taskDescription" class="form-control" @bind="newTaskDescription" />
+        </div>
+        <button class="btn btn-primary" @onclick="AddTask">Добавить дело</button>
+    </div>
+</div>
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th scope="col">Понедельник</th>
+            <th scope="col">Вторник</th>
+            <th scope="col">Среда</th>
+            <th scope="col">Четверг</th>
+            <th scope="col">Пятница</th>
+            <th scope="col">Суббота</th>
+            <th scope="col">Воскресенье</th>
+        </tr>
+    </thead>
+    <tbody>
+        @for (int i = 0; i < tasks.Max(t => t.Tasks.Count); i++)
+        {
+            <tr>
+                @for (int j = 0; j < tasks.Length; j++)
+                {
+                    if (i < tasks[j].Tasks.Count)
+                    {
+                        <td>@tasks[j].Tasks[i]</td>
+                    }
+                    else
+                    {
+                        <td></td>
+                    }
+                }
+            </tr>
+        }
+    </tbody>
+</table>
+
+@code {
+    private bool showAddTaskModal = false;
+    private string selectedDayOfWeek;
+    private string newTaskDescription;
+    private DayTasks[] tasks = new DayTasks[]
+    {
+        new DayTasks { Day = "Понедельник" },
+        new DayTasks { Day = "Вторник" },
+        new DayTasks { Day = "Среда" },
+        new DayTasks { Day = "Четверг" },
+        new DayTasks { Day = "Пятница" },
+        new DayTasks { Day = "Суббота" },
+        new DayTasks { Day = "Воскресенье" }
+    };
+
+    private class DayTasks
+    {
+        public string Day { get; set; }
+        public List<string> Tasks { get; set; } = new List<string>();
+    }
+
+    private void ShowAddTaskModal()
+    {
+        showAddTaskModal = true;
+    }
+
+    private void HideAddTaskModal()
+    {
+        showAddTaskModal = false;
+    }
+
+    private void AddTask()
+    {
+        if (!string.IsNullOrWhiteSpace(selectedDayOfWeek) && !string.IsNullOrWhiteSpace(newTaskDescription))
+        {
+            var dayTasks = tasks.FirstOrDefault(t => t.Day == selectedDayOfWeek);
+            if (dayTasks != null)
+            {
+                dayTasks.Tasks.Add(newTaskDescription);
+                newTaskDescription = string.Empty;
+                HideAddTaskModal();
+            }
+        }
+    }
+}
+@* @page "/list";
+
+<h3>На этой неделе нужно сделать</h3>
+
+<table class="table table-bordered">
+    <tbody>
+        <tr>
+            <th scope="col">Понедельник</th>
+            <th scope="col">Вторник</th>
+            <th scope="col">Среда</th>
+            <th scope="col">Четверг</th>
+            <th scope="col">Пятница</th>
+            <th scope="col">Суббота</th>
+            <th scope="col">Воскресенье</th>
+        </tr>
+    </tbody>
+    <tbody>
+        <tr>
+            <th scope="row">Позвонить бабушке</th>
+            <td>Закрыть долги по си шарпу</td>
+            <td>Убраться дома</td>
+            <td>Сходить в магазин за продуктами</td>
+            <td></td>
+            <td></td>
+            <td>Пройти сверку документов в ГИБДД</td>
+        </tr>
+        <tr>
+            <th scope="row"></th>
+            <td>Сходить на вождение</td>
+            <td></td>
+            <td></td>
+            <td>Приготовить покушать</td>
+            <td>Сделать практики по вебу</td>
+            <td>Подготовиться к ср</td>
+        </tr>
+        <tr>
+            <th scope="row"></th>
+            <td></td>
+            <td>Сходить с девочками в клуб</td>
+            <td>Попросить перенести ср у Талгата</td>
+            <td>Обмыть покупку водительских прав</td>
+            <td>Помочь папе</td>
+            <td></td>
+        </tr>
+        <tr>
+            <th scope="row">Починить посудомойку</th>
+            <td>Сделать ремонт в туалете</td>
+            <td>Почиллить, покушать чипсы</td>
+            <td>Сходить купить энергетик несорвешеннолетним</td>
+            <td>По плану шоппинг</td>
+            <td>Зарубиться в компьютерном клубе с друзьями</td>
+            <td>Маникюр и педикюр</td>
+        </tr>
+        <tr>
+            <th scope="row">Нарастить офигенные ресницы</th>
+            <td>Помочь Айгизе с дискреткой</td>
+            <td>Поссориться с кем-то для внутреннего удовольствия</td>
+            <td></td>
+            <td>Сходить в пятерочку</td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <th scope="row">Приготовить маме пирог</th>
+            <td></td>
+            <td></td>
+            <td>Фотосессия</td>
+            <td>Построить бизнес-план своего салона красоты</td>
+            <td>Идем в DOSKI</td>
+            <td></td>
+        </tr>
+        <tr>
+            <th scope="row">Пойти устроиться на работу в ктитс</th>
+            <td>Прогулять код будущего</td>
+            <td>Сходить на все пары</td>
+            <td>Устроить себе чилл день</td>
+            <td>Выпить пива для спокойствия</td>
+            <td>Медитация и йога</td>
+            <td>Позвонить папулечке</td>
+        </tr>
+    </tbody>
+</table> *@
+
+<style>
+    .table {
+        width: 100%;
+        table-layout: fixed;
+    }
+
+        .table th,
+        .table td {
+            border: 1px solid #dee2e6;
+            padding: 0.75rem;
+            text-align: center;
+            vertical-align: middle;
+        }
+
+        .table th {
+            width: calc(100% / 7); 
+        }
+
+        .table td {
+            width: calc(100% / 7); 
+</style>
+
+
