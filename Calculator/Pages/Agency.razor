@@ -1,4 +1,4 @@
-﻿@page "/agency";
+﻿@page "/agency"
 @using Calculator.Data
 @inject AgentService AgentService
 
@@ -9,18 +9,22 @@
 <table class="table">
     <thead>
         <tr>
+            <th>ID</th>
             <th>Имя</th>
-            <th>Email</th>
-            <th>Телефон</th>
+            <th>Фамилия</th>
+            <th>Возраст</th>
+            <th>№ договора</th>
         </tr>
     </thead>
     <tbody>
-        @foreach (var agent in agents)
+        @foreach (var Agent in Agents)
         {
             <tr>
-                <td>@agent.Name</td>
-                <td>@agent.Email</td>
-                <td>@agent.Phone</td>
+                <td>@Agent.Id</td>
+                <td>@Agent.FirstName</td>
+                <td>@Agent.LastName</td>
+                <td>@Agent.Age</td>
+                <td>@Agent.Dogovor</td>
             </tr>
         }
     </tbody>
@@ -29,12 +33,12 @@
 <AddAgentModal @ref="addAgentModal" OnAgentAdded="HandleAgentAdded" />
 
 @code {
-    private List<Agent> agents = new List<Agent>();
+    private List<Agent> Agents = new List<Agent>();
     private AddAgentModal addAgentModal;
 
     protected override async Task OnInitializedAsync()
     {
-        agents = await AgentService.GetAgentsAsync();
+        Agents = await AgentService.GetAgentsAsync();
     }
 
     private void OpenAddAgentModal()
@@ -44,7 +48,33 @@
 
     private async Task HandleAgentAdded()
     {
-        agents = await AgentService.GetAgentsAsync();
+        Agents = await AgentService.GetAgentsAsync();
         StateHasChanged();
+    }
+}
+
+@code {
+    [Parameter]
+    public EventCallback OnAgentAdded { get; set; }
+
+    private string ModalDisplay = "display: none;";
+    private Agent newAgent = new Agent();
+
+    public void Show()
+    {
+        newAgent = new Agent();
+        ModalDisplay = "display: block;";
+    }
+
+    public void Hide()
+    {
+        ModalDisplay = "display: none;";
+    }
+
+    private async Task AddAgent()
+    {
+        await AgentService.AddAgentAsync(newAgent);
+        Hide();
+        await OnAgentAdded.InvokeAsync();
     }
 }
