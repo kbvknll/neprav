@@ -1,0 +1,50 @@
+﻿@page "/agency";
+@using Calculator.Data
+@inject AgentService AgentService
+
+<h3>Агентство Екатерины Анатольевны</h3>
+
+<button class="btn btn-primary" @onclick="OpenAddAgentModal">Добавить агента</button>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Имя</th>
+            <th>Email</th>
+            <th>Телефон</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var agent in agents)
+        {
+            <tr>
+                <td>@agent.Name</td>
+                <td>@agent.Email</td>
+                <td>@agent.Phone</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<AddAgentModal @ref="addAgentModal" OnAgentAdded="HandleAgentAdded" />
+
+@code {
+    private List<Agent> agents = new List<Agent>();
+    private AddAgentModal addAgentModal;
+
+    protected override async Task OnInitializedAsync()
+    {
+        agents = await AgentService.GetAgentsAsync();
+    }
+
+    private void OpenAddAgentModal()
+    {
+        addAgentModal.Show();
+    }
+
+    private async Task HandleAgentAdded()
+    {
+        agents = await AgentService.GetAgentsAsync();
+        StateHasChanged();
+    }
+}

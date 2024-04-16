@@ -7,21 +7,20 @@
         <input type="text" id="display" value="@displayValue" readonly />
     </div>
     <div class="buttons">
-        <button @onclick="() => AppendNumber('1')">1</button>
-        <button @onclick="() => AppendNumber('2')">2</button>
-        <button @onclick="() => AppendNumber('3')">3</button>
-        <button @onclick="() => AppendNumber('4')">4</button>
-        <button @onclick="() => AppendNumber('5')">5</button>
-        <button @onclick="() => AppendNumber('6')">6</button>
-        <button @onclick="() => AppendNumber('7')">7</button>
-        <button @onclick="() => AppendNumber('8')">8</button>
-        <button @onclick="() => AppendNumber('9')">9</button>
-        <button @onclick="() => AppendNumber('0')">0</button>
-        <button @onclick="() => AppendNumber('.')">.</button>
-        <button @onclick="() => AppendOperator('+')">+</button>
-        <button @onclick="() => AppendOperator('-')">-</button>
-        <button @onclick="() => AppendOperator('*')">*</button>
-        <button @onclick="() => AppendOperator('/')">/</button>
+        <button @onclick="() => AppendNumber('1'.ToString())">1</button>
+        <button @onclick="() => AppendNumber('2'.ToString())">2</button>
+        <button @onclick="() => AppendNumber('3'.ToString())">3</button>
+        <button @onclick="() => AppendNumber('4'.ToString())">4</button>
+        <button @onclick="() => AppendNumber('5'.ToString())">5</button>
+        <button @onclick="() => AppendNumber('6'.ToString())">6</button>
+        <button @onclick="() => AppendNumber('7'.ToString())">7</button>
+        <button @onclick="() => AppendNumber('8'.ToString())">8</button>
+        <button @onclick="() => AppendNumber('9'.ToString())">9</button>
+        <button @onclick="() => AppendNumber('0'.ToString())">0</button>
+        <button @onclick="() => AppendOperator('+'.ToString())">+</button>
+        <button @onclick="() => AppendOperator('-'.ToString())">-</button>
+        <button @onclick="() => AppendOperator('*'.ToString())">*</button>
+        <button @onclick="() => AppendOperator('/'.ToString())">/</button>
         <button @onclick="() => CalculateResult()">=</button>
         <button @onclick="() => ClearDisplay()">C</button>
     </div>

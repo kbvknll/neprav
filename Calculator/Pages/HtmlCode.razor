@@ -1,7 +1,41 @@
-﻿@page "/htmlcode"
+﻿@* @page "/htmlcode"
 
 <h3>Приколюха "я папина программистка"</h3>
 
+
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <textarea @bind="htmlCode" class="form-control" rows="10" placeholder="Введите HTML код здесь..."></textarea>
+        </div>
+        <div class="col">
+            <div class="html-preview">
+                @((MarkupString)htmlCode)
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    private string htmlCode = "<h1>Введите HTML код здесь...</h1>";
+}
+
+<style>
+    .container {
+        margin-top: 20px;
+    }
+
+    .html-preview {
+        border: 1px solid #dee2e6;
+        padding: 10px;
+        min-height: 200px;
+        overflow: auto;
+    }
+</style> *@
+
+@page "/htmlcode"
+
+<h3>Приколюха "я папина программистка"</h3>
 
 <div class="container">
     <div class="row">
