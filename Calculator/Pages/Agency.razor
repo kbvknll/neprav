@@ -17,14 +17,14 @@
         </tr>
     </thead>
     <tbody>
-        @foreach (var Agent in Agents)
+        @foreach (var agent in Agents)
         {
             <tr>
-                <td>@Agent.Id</td>
-                <td>@Agent.FirstName</td>
-                <td>@Agent.LastName</td>
-                <td>@Agent.Age</td>
-                <td>@Agent.Dogovor</td>
+                <td>@agent.Id</td>
+                <td>@agent.FirstName</td>
+                <td>@agent.LastName</td>
+                <td>@agent.Age</td>
+                <td>@agent.Dogovor</td>
             </tr>
         }
     </tbody>
@@ -32,13 +32,44 @@
 
 <AddAgentModal @ref="addAgentModal" OnAgentAdded="HandleAgentAdded" />
 
+<h3>Журнал доходов/расходов</h3>
+
+<button class="btn btn-primary" @onclick="OpenAddTransactionModal">Добавить доход/расход</button>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Имя</th>
+            <th>Фамилия</th>
+            <th>Сумма</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var transaction in Transactions)
+        {
+            <tr>
+                <td>@transaction.Agent.Id</td>
+                <td>@transaction.Agent.FirstName</td>
+                <td>@transaction.Agent.LastName</td>
+                <td style="@(transaction.Amount < 0 ? "color:red;" : "color:green;")">@transaction.Amount</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<AddTransactionModal @ref="addTransactionModal" OnTransactionAdded="HandleTransactionAdded" Agents="Agents" />
+
 @code {
     private List<Agent> Agents = new List<Agent>();
+    private List<Transaction> Transactions = new List<Transaction>();
     private AddAgentModal addAgentModal;
+    private AddTransactionModal addTransactionModal;
 
     protected override async Task OnInitializedAsync()
     {
         Agents = await AgentService.GetAgentsAsync();
+        Transactions = await AgentService.GetTransactionsAsync();
     }
 
     private void OpenAddAgentModal()
@@ -46,35 +77,20 @@
         addAgentModal.Show();
     }
 
+    private void OpenAddTransactionModal()
+    {
+        addTransactionModal.Show();
+    }
+
     private async Task HandleAgentAdded()
     {
         Agents = await AgentService.GetAgentsAsync();
         StateHasChanged();
     }
-}
 
-@code {
-    [Parameter]
-    public EventCallback OnAgentAdded { get; set; }
-
-    private string ModalDisplay = "display: none;";
-    private Agent newAgent = new Agent();
-
-    public void Show()
+    private async Task HandleTransactionAdded()
     {
-        newAgent = new Agent();
-        ModalDisplay = "display: block;";
-    }
-
-    public void Hide()
-    {
-        ModalDisplay = "display: none;";
-    }
-
-    private async Task AddAgent()
-    {
-        await AgentService.AddAgentAsync(newAgent);
-        Hide();
-        await OnAgentAdded.InvokeAsync();
+        Transactions = await AgentService.GetTransactionsAsync();
+        StateHasChanged();
     }
 }

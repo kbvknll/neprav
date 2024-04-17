@@ -1,0 +1,61 @@
+﻿@using Calculator.Data
+@inject AgentService AgentService
+
+<div class="modal" tabindex="-1" role="dialog" style="@ModalDisplay">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Добавить доход/расход</h5>
+                <button type="button" class="close" @onclick="Hide" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <select class="form-control" @bind="SelectedAgentId">
+                    @foreach (var agent in Agents)
+                    {
+                        <option value="@agent.Id">@agent.FirstName @agent.LastName</option>
+                    }
+                </select>
+                <input type="text" @bind="TransactionAmount" placeholder="Сумма" class="form-control" step="any" />
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" @onclick="Hide">Закрыть</button>
+                <button type="button" class="btn btn-primary" @onclick="AddTransaction">Добавить</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    private string ModalDisplay = "display: none;";
+    private string SelectedAgentId;
+    private decimal TransactionAmount;
+
+    [Parameter]
+    public EventCallback OnTransactionAdded { get; set; }
+
+    [Parameter]
+    public List<Agent> Agents { get; set; }
+
+    public void Show()
+    {
+        ModalDisplay = "display: block;";
+    }
+
+    public void Hide()
+    {
+        ModalDisplay = "display: none;";
+    }
+
+    private async Task AddTransaction()
+    {
+        var agent = Agents.FirstOrDefault(a => a.Id == SelectedAgentId);
+        if (agent != null)
+        {
+            await AgentService.AddTransactionAsync(agent, TransactionAmount);
+            Hide();
+            await OnTransactionAdded.InvokeAsync();
+        }
+    }
+}
